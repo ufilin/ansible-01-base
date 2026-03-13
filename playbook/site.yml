@@ -1,8 +1,38 @@
 ---
+  - name: Docker
+    hosts: localhost
+    connection: local
+    tasks:
+      - name: Ubuntu
+        docker_container:
+          name: ubuntu
+          image: ubuntu:latest
+          state: started
+          restart_policy: always
+          command: sleep infinity
+      - name: CentOS 7
+        docker_container:
+          name: centos7
+          image: centos:7
+          state: started
+          restart_policy: always
+          command: sleep infinity  
+      
+      - name: Add containers to inventory
+        add_host:
+          name: "{{ item }}"
+          groups: docker_containers
+          ansible_connection: docker
+        loop:
+          - ubuntu
+          - centos7
+
   - name: Print os facts
     hosts: all
     tasks:
-      - name: Print OS
+      - name: Gather facts
+        setup:
+      - name: Print OSansible-in  
         debug:
           msg: "{{ ansible_distribution }}"
       - name: Print fact
